@@ -41,6 +41,16 @@ input:focus, select:focus, textarea:focus { border-color: #6e56ff; box-shadow: 0
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { padding: 12px 10px; border-bottom: 1px solid var(--border); text-align: left; }
 
+h3 { margin: 8px 0 6px; }
+/* Home sections */
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+.card-soft { padding: 18px; border-radius: 14px; background: linear-gradient(180deg, rgba(16,16,27,.9), rgba(16,16,27,.86)); border: 1px solid var(--border); box-shadow: 0 0 0 1px rgba(124,92,255,.05) inset; }
+.badge { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; background: radial-gradient(120% 120% at 0% 0%, var(--accent), var(--primary)); box-shadow: 0 10px 30px rgba(139,92,255,.25); }
+.steps { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+.steps li { display:flex; gap:12px; align-items:flex-start; background: linear-gradient(180deg, rgba(16,16,27,.9), rgba(16,16,27,.86)); border:1px solid var(--border); padding:12px 14px; border-radius:12px; }
+.step-index { width:28px; height:28px; display:grid; place-items:center; border-radius:8px; background: radial-gradient(120% 120% at 0% 0%, var(--primary), var(--accent)); font-weight:800; color:#fff; }
+.muted { color: var(--muted); }
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
