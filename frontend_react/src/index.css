@@ -65,6 +65,13 @@ h3 { margin: 8px 0 6px; }
 .title-underline { position: relative; display:inline-block; }
 .title-underline::after { content:""; position:absolute; left:0; right:0; bottom:-6px; height:3px; border-radius:2px; background: linear-gradient(90deg, var(--accent), var(--primary)); box-shadow: 0 6px 20px rgba(139,92,255,.35); }
 
+/* Auth forms */
+.auth-card { position: relative; overflow: hidden; }
+.auth-emblem { width:56px; height:56px; display:grid; place-items:center; border-radius:16px; margin: 6px auto 6px; background: radial-gradient(120% 120% at 0% 0%, var(--accent), var(--primary)); box-shadow: 0 16px 50px rgba(139,92,255,.35); }
+.auth-title { text-align:center; margin: 6px 0 14px; color: var(--heading); }
+.link-violet { color: #b9a7ff; }
+.link-violet:hover { color: #d1c6ff; }
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
