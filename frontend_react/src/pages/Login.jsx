@@ -24,7 +24,7 @@ export default function Login(){
 
   return (
     <div className="container auth-page" style={{display:'grid', placeItems:'center'}}>
-      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:900}}>
+      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:90make the 0}}>
         <div className="auth-emblem">
           <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -47,7 +47,7 @@ export default function Login(){
           <label>Password</label>
           <input value={password} onChange={e=>setPassword(e.target.value)} type="password" required />
         </div>
-        <div className="row"><button className="btn btn-block" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button></div>
+        <div className="row"><button className="btn btn-block" style={{height:56, fontSize:18}} disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button></div>
         <div className="help">{msg}</div>
         <div className="help">No account? <Link className="link-violet" to="/register">Create one</Link></div>
       </form>
