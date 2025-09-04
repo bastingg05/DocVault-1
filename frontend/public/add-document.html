@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Document — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu"><a class="btn" href="/documents.html">Back</a></div>
+    </nav>
+    <main class="container">
+      <section class="panel">
+        <h2>Upload a document</h2>
+        <form method="post" action="/api/documents" enctype="multipart/form-data" class="row">
+          <div class="row inline">
+            <div><label>Name</label><input name="name" required /></div>
+            <div><label>Category</label>
+              <select name="category" required>
+                <option>Academic</option>
+                <option>ID Proof</option>
+                <option>Certificates</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="row inline">
+            <div><label>Expiry</label><input type="date" name="expiryDate" /></div>
+            <div><label>File</label><input type="file" name="file" required /></div>
+          </div>
+          <div class="row"><label>Notes</label><textarea name="notes" rows="3"></textarea></div>
+          <div class="row"><button class="btn" type="submit">Upload</button></div>
+        </form>
+      </section>
+    </main>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Document — DocuVault</title>
+  </head>
+  <body>
+    <h2>Add a document</h2>
+    <p><a href="/documents.html">Back</a></p>
+    <form method="post" action="/api/documents" enctype="multipart/form-data">
+      <div><label>Name <input type="text" name="name" required /></label></div>
+      <div><label>Category
+        <select name="category" required>
+          <option>Academic</option>
+          <option>ID Proof</option>
+          <option>Certificates</option>
+          <option>Other</option>
+        </select>
+      </label></div>
+      <div><label>Expiry <input type="date" name="expiryDate" /></label></div>
+      <div><label>Notes <input type="text" name="notes" /></label></div>
+      <div><label>File <input type="file" name="file" required /></label></div>
+      <button type="submit">Upload</button>
+    </form>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Document — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/index.html"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu">
+        <a href="/documents.html" class="btn secondary">Back to documents</a>
+        <button class="btn secondary" onclick="DocuVault.logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Add a new document</h2>
+        <form id="docForm" class="row" enctype="multipart/form-data">
+          <div class="row inline">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="e.g., Passport" required />
+            </div>
+            <div>
+              <label for="category">Category</label>
+              <select id="category" name="category" required>
+                <option value="">Select…</option>
+                <option>Academic</option>
+                <option>ID Proof</option>
+                <option>Certificates</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="row inline">
+            <div>
+              <label for="expiryDate">Expiry date</label>
+              <input id="expiryDate" name="expiryDate" type="date" />
+            </div>
+            <div>
+              <label for="file">File</label>
+              <input id="file" name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required />
+            </div>
+          </div>
+          <div class="row">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Optional notes"></textarea>
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Upload</button>
+          </div>
+          <div id="status" class="help"></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="/assets/js/app.js"></script>
+    <script>
+      DocuVault.requireAuth();
+      const form = document.getElementById('docForm');
+      const status = document.getElementById('status');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        DocuVault.setStatus(status, 'Uploading…');
+        try {
+          const fd = new FormData(form);
+          await DocuVault.api.createDocument(fd);
+          window.location.href = '/documents.html';
+        } catch (err) {
+          DocuVault.setStatus(status, err.message || 'Upload failed', true);
+        }
+      });
+    </script>
+  </body>
+  </html>
+
+
+
+

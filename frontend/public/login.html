@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/"><span class="logo"></span><span>DocuVault</span></a>
+    </nav>
+    <main class="container">
+      <section class="panel">
+        <h2>Sign in</h2>
+        <form method="post" action="/api/auth/login" class="row">
+          <div class="row">
+            <label>Email</label>
+            <input type="email" name="email" required />
+          </div>
+          <div class="row">
+            <label>Password</label>
+            <input type="password" name="password" required />
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Sign in</button>
+          </div>
+          <div class="help">No account? <a href="/register.html">Create one</a></div>
+        </form>
+      </section>
+    </main>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — DocuVault</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <form method="post" action="/api/auth/login">
+      <div>
+        <label>Email <input type="email" name="email" required /></label>
+      </div>
+      <div>
+        <label>Password <input type="password" name="password" required /></label>
+      </div>
+      <button type="submit">Sign in</button>
+    </form>
+    <p><a href="/register.html">Create an account</a></p>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/index.html"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu">
+        <a href="/register.html">Register</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Welcome back</h2>
+        <p class="help">Sign in to access your documents.</p>
+        <form id="loginForm" class="row" autocomplete="on" method="post" action="/api/auth/login">
+          <div class="row">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="row">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="••••••••" required />
+          </div>
+          <div class="row">
+            <button class="btn" type="button" id="loginBtn">Sign in</button>
+          </div>
+          <div id="status" class="help"></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="/assets/js/app.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('loginForm');
+        const status = document.getElementById('status');
+        // Allow native form POST to server which will set cookie and redirect
+        document.getElementById('loginBtn').addEventListener('click', () => form.submit());
+      });
+    </script>
+  </body>
+  </html>
+
+

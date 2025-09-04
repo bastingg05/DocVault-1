@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/"><span class="logo"></span><span>DocuVault</span></a>
+    </nav>
+    <main class="container">
+      <section class="panel">
+        <h2>Create account</h2>
+        <form method="post" action="/api/auth/register" class="row">
+          <div class="row inline">
+            <div>
+              <label>Name</label>
+              <input type="text" name="name" required />
+            </div>
+            <div>
+              <label>Email</label>
+              <input type="email" name="email" required />
+            </div>
+          </div>
+          <div class="row inline">
+            <div>
+              <label>Password</label>
+              <input type="password" name="password" required />
+            </div>
+            <div>
+              <label>Confirm password</label>
+              <input type="password" name="confirm" required />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Create account</button>
+          </div>
+          <div class="help">Already have an account? <a href="/login.html">Sign in</a></div>
+        </form>
+      </section>
+    </main>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register — DocuVault</title>
+  </head>
+  <body>
+    <h2>Register</h2>
+    <form method="post" action="/api/auth/register">
+      <div>
+        <label>Name <input type="text" name="name" required /></label>
+      </div>
+      <div>
+        <label>Email <input type="email" name="email" required /></label>
+      </div>
+      <div>
+        <label>Password <input type="password" name="password" required /></label>
+      </div>
+      <button type="submit">Create account</button>
+    </form>
+    <p><a href="/login.html">Already have an account?</a></p>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/index.html"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu">
+        <a href="/login.html">Login</a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Create your account</h2>
+        <p class="help">Start organizing your documents in minutes.</p>
+        <form id="registerForm" class="row" autocomplete="on" method="post" action="/api/auth/register" novalidate>
+          <div class="row inline">
+            <div>
+              <label for="name">Full name</label>
+              <input id="name" name="name" type="text" placeholder="Jane Doe" required />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" required />
+            </div>
+          </div>
+          <div class="row inline">
+            <div>
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" placeholder="Create a password" required />
+            </div>
+            <div>
+              <label for="confirm">Confirm password</label>
+              <input id="confirm" name="confirm" type="password" placeholder="Confirm password" required />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" type="button" id="registerBtn">Create account</button>
+          </div>
+          <div id="status" class="help"></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="/assets/js/app.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('registerForm');
+        const status = document.getElementById('status');
+        document.getElementById('registerBtn').addEventListener('click', () => {
+          if (form.password.value !== form.confirm.value) {
+            DocuVault.setStatus(status, 'Passwords do not match', true);
+            return;
+          }
+          form.submit();
+        });
+      });
+    </script>
+  </body>
+  </html>
+
+

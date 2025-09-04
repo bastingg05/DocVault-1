@@ -1,0 +1,10 @@
+﻿node_modules/
+.env
+backend/.env
+frontend_react/.env
+uploads/
+dist/
+build/
+.DS_Store
+Thumbs.db
+

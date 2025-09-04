@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documents — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu">
+        <a class="btn" href="/add-document.html">Add document</a>
+        <form method="post" action="/api/auth/logout" style="display:inline">
+          <button class="menu btn" type="submit">Logout</button>
+        </form>
+      </div>
+    </nav>
+    <main class="container">
+      <section class="panel">
+        <h2>Your documents</h2>
+        <div class="row inline">
+          <div>
+            <label>Search</label>
+            <input id="q" type="text" placeholder="Name or keyword" />
+          </div>
+          <div>
+            <label>Category</label>
+            <select id="category">
+              <option value="">All</option>
+              <option>Academic</option>
+              <option>ID Proof</option>
+              <option>Certificates</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <table class="table">
+            <thead><tr><th>Name</th><th>Category</th><th>Expiry</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div id="status" class="help"></div>
+        </div>
+      </section>
+    </main>
+    <script src="/assets/js/app.js"></script>
+    <script>
+      DocuVault.requireAuth();
+      const tbody = document.getElementById('tbody');
+      const status = document.getElementById('status');
+      async function load(){
+        try{
+          const params = new URLSearchParams();
+          const q=document.getElementById('q').value.trim();
+          const c=document.getElementById('category').value;
+          if(q) params.set('q', q); if(c) params.set('category', c);
+          const res = await fetch('/api/documents'+(params.toString()?('?'+params):''));
+          if(!res.ok) throw new Error('Failed');
+          const data = await res.json();
+          tbody.innerHTML='';
+          for(const d of (data.items||[])){
+            const tr=document.createElement('tr');
+            tr.innerHTML = `<td>${d.name}</td><td>${d.category}</td><td>${d.expiryDate?new Date(d.expiryDate).toLocaleDateString():'-'}</td><td><a class="btn" href="${d.downloadUrl}" target="_blank">Download</a></td>`;
+            tbody.appendChild(tr);
+          }
+          status.textContent = `${(data.items||[]).length} documents`;
+        }catch(e){ status.textContent='Failed to load'; }
+      }
+      document.getElementById('q').addEventListener('input', load);
+      document.getElementById('category').addEventListener('change', load);
+      load();
+    </script>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documents — DocuVault</title>
+  </head>
+  <body>
+    <h2>Your Documents</h2>
+    <p><a href="/add-document.html">Add document</a> • <form style="display:inline" method="post" action="/api/auth/logout"><button type="submit">Logout</button></form></p>
+    <div>
+      <label>Search <input id="q" type="text" /></label>
+      <label>Category
+        <select id="category">
+          <option value="">All</option>
+          <option>Academic</option>
+          <option>ID Proof</option>
+          <option>Certificates</option>
+          <option>Other</option>
+        </select>
+      </label>
+    </div>
+    <table border="1" cellpadding="6">
+      <thead><tr><th>Name</th><th>Category</th><th>Expiry</th><th>Actions</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <pre id="status"></pre>
+
+    <script>
+      async function load() {
+        const params = new URLSearchParams();
+        const q = document.getElementById('q').value.trim();
+        const c = document.getElementById('category').value;
+        if (q) params.set('q', q);
+        if (c) params.set('category', c);
+        const res = await fetch('/api/documents' + (params.toString() ? ('?' + params) : ''));
+        if (!res.ok) { document.getElementById('status').textContent = 'Failed to load'; return; }
+        const data = await res.json();
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        for (const d of (data.items || [])) {
+          const tr = document.createElement('tr');
+          const exp = d.expiryDate ? new Date(d.expiryDate).toLocaleDateString() : '-';
+          tr.innerHTML = `<td>${d.name}</td><td>${d.category}</td><td>${exp}</td><td><a href="${d.downloadUrl}" target="_blank">Download</a></td>`;
+          tbody.appendChild(tr);
+        }
+        document.getElementById('status').textContent = `${(data.items||[]).length} documents`;
+      }
+      document.getElementById('q').addEventListener('input', load);
+      document.getElementById('category').addEventListener('change', load);
+      load();
+    </script>
+  </body>
+  </html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Documents — DocuVault</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="brand" href="/index.html"><span class="logo"></span><span>DocuVault</span></a>
+      <div class="menu">
+        <a href="/add-document.html" class="btn">Add document</a>
+        <button class="btn secondary" onclick="DocuVault.logout()">Logout</button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <section class="panel">
+        <h2>Your documents</h2>
+        <div class="row inline">
+          <div>
+            <label for="q">Search</label>
+            <input id="q" type="text" placeholder="Name or keyword" />
+          </div>
+          <div>
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="">All</option>
+              <option>Academic</option>
+              <option>ID Proof</option>
+              <option>Certificates</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <table class="table" id="docTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Expiry</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="status" class="help"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/assets/js/app.js"></script>
+    <script>
+      DocuVault.requireAuth();
+      // If cookie-based auth is present but localStorage absent, try to fetch profile once
+      (async () => {
+        if (!localStorage.getItem('dv_token')) {
+          try {
+            const me = await fetch('/api/auth/me');
+            if (me.ok) return; // allowed via cookie
+          } catch {}
+          // fallback to login
+          window.location.href = '/login.html';
+        }
+      })();
+      const q = document.getElementById('q');
+      const category = document.getElementById('category');
+      const tbody = document.querySelector('#docTable tbody');
+      const status = document.getElementById('status');
+
+      async function load() {
+        DocuVault.setStatus(status, 'Loading…');
+        try {
+          const params = new URLSearchParams();
+          if (q.value.trim()) params.set('q', q.value.trim());
+          if (category.value) params.set('category', category.value);
+          const data = await DocuVault.api.listDocuments(params.toString() ? `?${params}` : '');
+          render(data.items || []);
+          DocuVault.setStatus(status, `${(data.items || []).length} document(s)`);
+        } catch (err) {
+          DocuVault.setStatus(status, err.message || 'Failed to load', true);
+        }
+      }
+
+      function render(items) {
+        tbody.innerHTML = '';
+        if (!items.length) {
+          tbody.innerHTML = '<tr><td colspan="4" class="help">No results</td></tr>';
+          return;
+        }
+        for (const doc of items) {
+          const tr = document.createElement('tr');
+          const exp = doc.expiryDate ? new Date(doc.expiryDate) : null;
+          const soon = exp && (exp - Date.now()) < 1000*60*60*24*30;
+          tr.innerHTML = `
+            <td>${doc.name || ''}</td>
+            <td><span class="badge">${doc.category || ''}</span></td>
+            <td>${exp ? `<span class="badge ${soon ? 'warn' : ''}">${exp.toLocaleDateString()}</span>` : '-'}</td>
+            <td>
+              <a class="btn secondary" href="${doc.downloadUrl || '#'}">Download</a>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      q.addEventListener('input', () => load());
+      category.addEventListener('change', () => load());
+      load();
+    </script>
+  </body>
+  </html>
+
+
+
+
