@@ -13,7 +13,7 @@ const documentRoutes = require('./routes/documents');
 
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'https://docvault-1.onrender.com'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174', 'https://doc-vault-1.vercel.app'], credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
