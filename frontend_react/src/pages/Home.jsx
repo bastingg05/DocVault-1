@@ -5,8 +5,8 @@ export default function Home(){
     <div>
       <section className="container" style={{textAlign:'center', paddingTop: 60}}>
         <div style={{display:'flex',justifyContent:'center',marginBottom:18}}>
-          <div className="pulse-glow" style={{width:150,height:150,borderRadius:90,background:'radial-gradient(closest-side, rgba(139,92,255,.35), rgba(53,195,255,.2) 60%, transparent)',display:'grid',placeItems:'center'}}>
-            <svg width="68" height="68" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="pulse-glow" style={{width:160,height:160,borderRadius:100,background:'radial-gradient(closest-side, rgba(139,92,255,.38), rgba(53,195,255,.22) 60%, transparent)',display:'grid',placeItems:'center', boxShadow:'0 30px 120px rgba(139,92,255,.4), 0 -20px 100px rgba(53,195,255,.25)'}}>
+            <svg width="74" height="74" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={{filter:'drop-shadow(0 8px 22px rgba(139,92,255,.35))'}}>
               <defs>
                 <linearGradient id="h1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#35c3ff"/>
@@ -32,7 +32,7 @@ export default function Home(){
 
       <section className="container">
         <div className="panel" style={{maxWidth:1040}}>
-          <h2 style={{marginTop:0}}>Why DocuVault?</h2>
+          <h2 className="title-underline" style={{marginTop:0}}>Why DocuVault?</h2>
           <div className="grid-3">
             <div className="card-soft">
               <div className="badge">🔐</div>
@@ -55,7 +55,7 @@ export default function Home(){
 
       <section className="container">
         <div className="panel" style={{maxWidth:1040}}>
-          <h2 style={{marginTop:0}}>How it works</h2>
+          <h2 className="title-underline" style={{marginTop:0}}>How it works</h2>
           <ol className="steps">
             <li>
               <span className="step-index">1</span>
@@ -84,7 +84,7 @@ export default function Home(){
 
       <section className="container" style={{textAlign:'center'}}>
         <div className="panel" style={{maxWidth:840}}>
-          <h2 style={{marginTop:0}}>Ready to protect your documents?</h2>
+          <h2 className="title-underline" style={{marginTop:0}}>Ready to protect your documents?</h2>
           <p className="help" style={{margin:'0 auto 18px',maxWidth:700}}>Join DocuVault today and experience secure, stress‑free document management with beautiful clarity.</p>
           <div style={{display:'flex',gap:12,justifyContent:'center'}}>
             <Link className="btn" to="/register">Create Free Account</Link>
