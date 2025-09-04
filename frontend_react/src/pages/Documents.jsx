@@ -10,6 +10,7 @@ export default function Documents(){
   const [q, setQ] = useState('')
   const [category, setCategory] = useState('')
   const [msg, setMsg] = useState('')
+  const [deletingId, setDeletingId] = useState('')
 
   async function load(){
     try{
@@ -25,17 +26,27 @@ export default function Documents(){
   }
   useEffect(()=>{ load() }, [])
 
+  async function deleteDoc(id){
+    try{
+      const token = localStorage.getItem('dv_token')
+      setDeletingId(id)
+      await axios.delete(`${API_BASE}/api/documents/${id}`, { headers: { Authorization: `Bearer ${token}` }})
+      await load()
+    }catch(err){ setMsg('Delete failed') }
+    finally{ setDeletingId('') }
+  }
+
   return (
     <div className="container">
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <h2>Your documents</h2>
+        <h2 className="title-underline">Your documents</h2>
         <div style={{display:'flex',gap:8}}>
           <Link className="btn" to="/add">Add document</Link>
           <button className="btn" onClick={()=>{ localStorage.removeItem('dv_token'); nav('/login') }}>Logout</button>
         </div>
       </div>
 
-      <div className="panel">
+      <div className="panel" style={{background:'linear-gradient(180deg, rgba(16,16,27,.96), rgba(16,16,27,.9))', boxShadow:'0 24px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(124,92,255,.08) inset'}}>
         <div className="row inline">
           <div>
             <label>Search</label>
@@ -53,13 +64,13 @@ export default function Documents(){
           </div>
         </div>
 
-        <table className="table">
+        <table className="table" style={{borderRadius:12, overflow:'hidden', boxShadow:'0 14px 40px rgba(0,0,0,.35)'}}>
           <thead><tr><th>Name</th><th>Category</th><th>Expiry</th><th>Actions</th></tr></thead>
           <tbody>
             {items.map(d=>{
               const exp = d.expiryDate ? new Date(d.expiryDate).toLocaleDateString() : '-'
               const base = API_BASE.replace(/\/$/,'')
-              const path = d.downloadUrl || d.filePath || ''
+              const path = d.downloadUrl || d.storagePath || ''
               const href = path ? (path.startsWith('http') ? path : `${base}${path.startsWith('/')? path : '/'+path}`) : ''
               return (
                 <tr key={d._id}>
@@ -69,6 +80,7 @@ export default function Documents(){
                   <td style={{display:'flex',gap:8}}>
                     {href && <a className="btn" href={href} target="_blank" rel="noopener">View</a>}
                     {href && <a className="btn" href={href} download>Download</a>}
+                    <button className="btn" onClick={()=>deleteDoc(d._id)} disabled={deletingId===d._id}>{deletingId===d._id ? 'Deleting…' : 'Delete'}</button>
                   </td>
                 </tr>
               )

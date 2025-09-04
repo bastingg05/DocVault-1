@@ -34,7 +34,7 @@ export default function AddDocument(){
         <h2>Add document</h2>
         <Link className="btn" to="/documents">Back</Link>
       </div>
-      <form onSubmit={onSubmit} className="panel" style={{maxWidth:720}}>
+      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:820}}>
         <div className="row inline">
           <div>
             <label>Name</label>
@@ -64,7 +64,7 @@ export default function AddDocument(){
           <label>Notes</label>
           <textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={3} />
         </div>
-        <div className="row"><button className="btn">Upload</button></div>
+        <div className="row"><button className="btn btn-block" style={{height:48, fontWeight:800}}>Upload</button></div>
         <div className="help">{msg}</div>
       </form>
     </div>
