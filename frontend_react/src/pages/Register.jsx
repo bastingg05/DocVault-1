@@ -27,7 +27,7 @@ export default function Register(){
 
   return (
     <div className="container auth-page" style={{display:'grid', placeItems:'center'}}>
-      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:720}}>
+      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:820}}>
         <div className="auth-emblem">
           <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -62,7 +62,7 @@ export default function Register(){
             <input value={confirm} onChange={e=>setConfirm(e.target.value)} type="password" required />
           </div>
         </div>
-        <div className="row"><button className="btn" disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button></div>
+        <div className="row"><button className="btn btn-block" disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button></div>
         <div className="help">{msg}</div>
         <div className="help">Have an account? <Link className="link-violet" to="/login">Sign in</Link></div>
       </form>
