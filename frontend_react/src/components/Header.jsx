@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom'
 function Logo(){
   return (
     <div style={{display:'flex',alignItems:'center',gap:10}}>
-      <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <linearGradient id="g1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
             <stop stopColor="#35c3ff"/>
             <stop offset="1" stopColor="#8b5cff"/>
           </linearGradient>
         </defs>
-        <rect x="8" y="18" width="32" height="22" rx="6" stroke="url(#g1)" strokeWidth="3" fill="rgba(139,92,255,0.12)"/>
-        <path d="M16 18v-4a8 8 0 0 1 16 0v4" stroke="url(#g1)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="24" cy="30" r="3" fill="#fff"/>
+        <rect x="10" y="24" width="44" height="28" rx="8" stroke="url(#g1)" strokeWidth="3" fill="rgba(139,92,255,0.12)"/>
+        <path d="M18 24v-5a14 14 0 0 1 28 0v5" stroke="url(#g1)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="32" cy="38" r="3.5" fill="#fff"/>
       </svg>
       <span className="logo">DocuVault</span>
     </div>
