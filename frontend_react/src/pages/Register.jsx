@@ -62,7 +62,7 @@ export default function Register(){
             <input value={confirm} onChange={e=>setConfirm(e.target.value)} type="password" required />
           </div>
         </div>
-        <div className="row"><button className="btn btn-block" style={{height:48, fontSize:16}} disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button></div>
+        <div className="row"><button className="btn btn-block" style={{height:48, fontSize:16, display:'flex', alignItems:'center', justifyContent:'center', padding:0, lineHeight:1}} disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button></div>
         <div className="help">{msg}</div>
         <div className="help">Have an account? <Link className="link-violet" to="/login">Sign in</Link></div>
       </form>
