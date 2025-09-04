@@ -63,6 +63,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Delete a document and its file
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await Document.findOne({ _id: id, userId: req.user.id });
+    if (!doc) return res.status(404).json({ message: 'Not found' });
+    // Remove file if exists
+    if (doc.storagePath) {
+      const filePath = path.join(process.cwd(), doc.storagePath);
+      try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch {}
+    }
+    await Document.deleteOne({ _id: id, userId: req.user.id });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ message: 'Delete failed' });
+  }
+});
+
 module.exports = router;
 
 
