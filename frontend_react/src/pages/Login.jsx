@@ -9,15 +9,17 @@ export default function Login(){
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
 
   async function onSubmit(e){
     e.preventDefault()
-    setMsg('Signing in...')
+    setLoading(true); setMsg('Signing in...')
     try{
       const { data } = await axios.post(`${API_BASE}/api/auth/login`, { email, password })
       localStorage.setItem('dv_token', data.token)
       nav('/documents')
     }catch(err){ setMsg(err.response?.data?.message || 'Login failed') }
+    finally{ setLoading(false) }
   }
 
   return (
@@ -45,7 +47,7 @@ export default function Login(){
           <label>Password</label>
           <input value={password} onChange={e=>setPassword(e.target.value)} type="password" required />
         </div>
-        <div className="row"><button className="btn">Sign in</button></div>
+        <div className="row"><button className="btn" disabled={loading}>{loading ? 'Signing in…' : 'Sign in'}</button></div>
         <div className="help">{msg}</div>
         <div className="help">No account? <Link className="link-violet" to="/register">Create one</Link></div>
       </form>

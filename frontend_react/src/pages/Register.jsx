@@ -11,16 +11,18 @@ export default function Register(){
   const [password,setPassword] = useState('')
   const [confirm,setConfirm] = useState('')
   const [msg,setMsg] = useState('')
+  const [loading,setLoading] = useState(false)
 
   async function onSubmit(e){
     e.preventDefault()
     if(password !== confirm){ setMsg('Passwords do not match'); return }
-    setMsg('Creating account...')
+    setLoading(true); setMsg('Creating account...')
     try{
       const { data } = await axios.post(`${API_BASE}/api/auth/register`, { name, email, password })
       localStorage.setItem('dv_token', data.token)
       nav('/documents')
     }catch(err){ setMsg(err.response?.data?.message || 'Registration failed') }
+    finally{ setLoading(false) }
   }
 
   return (
@@ -60,7 +62,7 @@ export default function Register(){
             <input value={confirm} onChange={e=>setConfirm(e.target.value)} type="password" required />
           </div>
         </div>
-        <div className="row"><button className="btn">Create account</button></div>
+        <div className="row"><button className="btn" disabled={loading}>{loading ? 'Creating…' : 'Create account'}</button></div>
         <div className="help">{msg}</div>
         <div className="help">Have an account? <Link className="link-violet" to="/login">Sign in</Link></div>
       </form>
