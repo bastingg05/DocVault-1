@@ -129,3 +129,21 @@ button:focus-visible {
 }
 
 /* Force dark theme; remove light override */
+
+/* Responsive tweaks */
+@media (max-width: 960px) {
+  .container { padding: 18px; }
+}
+@media (max-width: 780px) {
+  .row.inline { grid-template-columns: 1fr; row-gap: 10px; }
+  .auth-card { max-width: 95vw; padding: 24px; }
+  .panel { margin: 16px auto; padding: 18px; }
+}
+@media (max-width: 700px) {
+  .table thead { display: none; }
+  .table, .table tbody, .table tr, .table td { display: block; width: 100%; }
+  .table tr { margin-bottom: 12px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: linear-gradient(180deg, rgba(16,16,27,.95), rgba(16,16,27,.88)); }
+  .table td { border: 0; padding: 8px 10px; }
+  .table td::before { content: attr(data-label); color: var(--muted); font-size: 12px; display: block; margin-bottom: 4px; }
+  .btn.btn-block { width: 100%; }
+}

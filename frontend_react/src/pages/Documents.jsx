@@ -74,10 +74,10 @@ export default function Documents(){
               const href = path ? (path.startsWith('http') ? path : `${base}${path.startsWith('/')? path : '/'+path}`) : ''
               return (
                 <tr key={d._id}>
-                  <td>{d.name}</td>
-                  <td>{d.category}</td>
-                  <td>{exp}</td>
-                  <td style={{display:'flex',gap:8}}>
+                  <td data-label="Name">{d.name}</td>
+                  <td data-label="Category">{d.category}</td>
+                  <td data-label="Expiry">{exp}</td>
+                  <td data-label="Actions" style={{display:'flex',gap:8, flexWrap:'wrap'}}>
                     {href && <a className="btn" href={href} target="_blank" rel="noopener">View</a>}
                     {href && <a className="btn" href={href} download>Download</a>}
                     <button className="btn" onClick={()=>deleteDoc(d._id)} disabled={deletingId===d._id}>{deletingId===d._id ? 'Deleting…' : 'Delete'}</button>
