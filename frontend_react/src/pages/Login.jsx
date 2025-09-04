@@ -24,7 +24,7 @@ export default function Login(){
 
   return (
     <div className="container auth-page" style={{display:'grid', placeItems:'center'}}>
-      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:90make the 0}}>
+      <form onSubmit={onSubmit} className="panel auth-card" style={{maxWidth:900}}>
         <div className="auth-emblem">
           <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>

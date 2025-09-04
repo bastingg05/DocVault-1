@@ -82,10 +82,7 @@ h3 { margin: 8px 0 6px; }
 
 /* Auth page full violet/blue backdrop */
 .auth-page { min-height: calc(100vh - 64px); /* minus header */
-  background:
-    radial-gradient(800px 400px at 10% 0%, rgba(139,92,255,.18), transparent 70%),
-    radial-gradient(800px 400px at 110% 10%, rgba(53,195,255,.16), transparent 70%),
-    radial-gradient(1000px 500px at 50% 120%, rgba(139,92,255,.12), transparent 70%);
+  background: linear-gradient(135deg, #6f48ff 0%, #8b5cff 35%, #4f2cff 100%);
 }
 
 h1 {
