@@ -76,7 +76,7 @@ h3 { margin: 8px 0 6px; }
 .auth-card > * { position: relative; z-index: 1; }
 @keyframes glowPan { 0%{ transform: translateX(0) } 50%{ transform: translateX(-10px) } 100%{ transform: translateX(0) } }
 .auth-emblem { width:56px; height:56px; display:grid; place-items:center; border-radius:16px; margin: 6px auto 6px; background: radial-gradient(120% 120% at 0% 0%, var(--accent), var(--primary)); box-shadow: 0 16px 50px rgba(139,92,255,.35); }
-.auth-title { text-align:center; margin: 10px 0 18px; color: var(--heading); font-size: 32px; }
+.auth-title { text-align:center; margin: 10px 0 16px; color: var(--heading); font-size: 28px; }
 .link-violet { color: #b9a7ff; }
 .link-violet:hover { color: #d1c6ff; }
 
@@ -85,6 +85,11 @@ h3 { margin: 8px 0 6px; }
   background: none;
 }
 .auth-page::before { content: ""; position: fixed; inset: 0; z-index: -1; background: linear-gradient(135deg, #6f48ff 0%, #8b5cff 35%, #4f2cff 100%); }
+
+/* Smaller typography and controls inside auth cards */
+.auth-card label { font-size: 13px; }
+.auth-card input, .auth-card select, .auth-card textarea { padding: 10px 12px; font-size: 14px; border-radius: 12px; }
+.auth-card .btn { padding: 12px 14px; font-size: 16px; }
 
 h1 {
   font-size: 3.2em;
