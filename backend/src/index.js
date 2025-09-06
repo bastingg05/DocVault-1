@@ -13,7 +13,7 @@ const documentRoutes = require('./routes/documents');
 
 const app = express();
 app.use(helmet());
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174','http://192.168.20.100:5173', 'https://doc-vault-1.vercel.app'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174','http://192.168.20.100:5173', 'https://doc-vault-1.vercel.app', 'https://24f968c5d330.ngrok-free.app'], credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
