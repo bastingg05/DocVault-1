@@ -1,0 +1,5 @@
+[33mbba464f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Add backend .gitignore and update server configuration
+[33mb21834f[m chore: push latest backend CORS, UI polish, delete API, responsive tweaks
+[33ma5c6be8[m feat(responsive): mobile breakpoints; responsive tables; polish docs/add pages
+[33mf4fdaa6[m feat(ui): documents delete action; themed documents panel; polished add-document form
+[33mb36c003[m feat(api): DELETE /api/documents/:id removes DB record and file

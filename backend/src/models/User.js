@@ -8,8 +8,6 @@ const userSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
 }, { timestamps: true });
 
-userSchema.index({ email: 1 }, { unique: true });
-
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.passwordHash);
 };
