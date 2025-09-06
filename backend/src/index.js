@@ -18,12 +18,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const publicDir = path.join(process.cwd(), 'public');
 const uploadsDir = path.join(process.cwd(), 'uploads');
-app.use(express.static(publicDir));
 app.use('/uploads', express.static(uploadsDir));
 
-app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'index.html')));
+app.get('/', (req, res) => res.json({ message: 'DocVault API Server is running' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 
