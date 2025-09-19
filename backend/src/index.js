@@ -23,7 +23,8 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:5174',
       'http://192.168.20.100:5173',
-      'https://doc-vault-1.vercel.app'
+      'https://doc-vault-1.vercel.app',
+      'https://doc-vault-1-p5hnoiw1n-bastin-georges-projects.vercel.app'
     ];
     
     // Check if origin is in allowed list
@@ -33,6 +34,11 @@ const corsOptions = {
     
     // Allow localhost with any port for development
     if (origin.match(/^https?:\/\/localhost:\d+$/)) {
+      return callback(null, true);
+    }
+    
+    // Allow any Vercel subdomain for production
+    if (origin.match(/^https:\/\/.*\.vercel\.app$/)) {
       return callback(null, true);
     }
     
@@ -62,7 +68,8 @@ app.options('*', (req, res) => {
     'http://localhost:5173',
     'http://localhost:5174',
     'http://192.168.20.100:5173',
-    'https://doc-vault-1.vercel.app'
+    'https://doc-vault-1.vercel.app',
+    'https://doc-vault-1-p5hnoiw1n-bastin-georges-projects.vercel.app'
   ];
   
   let isAllowed = false;
@@ -72,6 +79,8 @@ app.options('*', (req, res) => {
   } else if (allowedOrigins.includes(origin)) {
     isAllowed = true;
   } else if (origin.match(/^https?:\/\/localhost:\d+$/)) {
+    isAllowed = true;
+  } else if (origin.match(/^https:\/\/.*\.vercel\.app$/)) {
     isAllowed = true;
   }
   
