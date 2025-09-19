@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5051'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Register(){
   const nav = useNavigate()
+  const { register, isAuthenticated } = useAuth()
   const [name,setName] = useState('')
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
@@ -13,16 +12,27 @@ export default function Register(){
   const [msg,setMsg] = useState('')
   const [loading,setLoading] = useState(false)
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      nav('/documents')
+    }
+  }, [isAuthenticated, nav])
+
   async function onSubmit(e){
     e.preventDefault()
     if(password !== confirm){ setMsg('Passwords do not match'); return }
     setLoading(true); setMsg('Creating account...')
-    try{
-      const { data } = await axios.post(`${API_BASE}/api/auth/register`, { name, email, password })
-      localStorage.setItem('dv_token', data.token)
+    
+    const result = await register(name, email, password)
+    
+    if (result.success) {
       nav('/documents')
-    }catch(err){ setMsg(err.response?.data?.message || 'Registration failed') }
-    finally{ setLoading(false) }
+    } else {
+      setMsg(result.message)
+    }
+    
+    setLoading(false)
   }
 
   return (

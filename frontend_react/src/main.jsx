@@ -9,6 +9,8 @@ import AddDocument from './pages/AddDocument.jsx'
 import NotFound from './pages/NotFound.jsx'
 import Home from './pages/Home.jsx'
 import Header from './components/Header.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 
 function withLayout(el){
   return (
@@ -23,13 +25,15 @@ const router = createBrowserRouter([
   { path: '/', element: withLayout(<Home />), errorElement: <NotFound /> },
   { path: '/login', element: withLayout(<Login />) },
   { path: '/register', element: withLayout(<Register />) },
-  { path: '/documents', element: withLayout(<Documents />) },
-  { path: '/add', element: withLayout(<AddDocument />) },
+  { path: '/documents', element: withLayout(<ProtectedRoute><Documents /></ProtectedRoute>) },
+  { path: '/add', element: withLayout(<ProtectedRoute><AddDocument /></ProtectedRoute>) },
   { path: '*', element: withLayout(<NotFound />) },
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 )

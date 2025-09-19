@@ -49,6 +49,16 @@ router.post('/logout', (req, res) => {
   res.redirect('/login.html');
 });
 
+router.get('/verify', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).lean();
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ user: { id: user._id, name: user.name, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to verify token' });
+  }
+});
+
 router.get('/me', requireAuth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).lean();

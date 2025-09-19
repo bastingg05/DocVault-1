@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 function Logo(){
   return (
@@ -20,6 +21,8 @@ function Logo(){
 }
 
 export default function Header(){
+  const { user, isAuthenticated, logout } = useAuth()
+
   return (
     <header className="app-header">
       <nav className="nav">
@@ -28,12 +31,36 @@ export default function Header(){
           <Link to="/">
             <span role="img" aria-label="home">🏠</span> Home
           </Link>
-          <Link to="/login">
-            <span role="img" aria-label="login">🔐</span> Login
-          </Link>
-          <Link to="/register" className="btn" style={{padding:'8px 12px'}}>
-            <span role="img" aria-label="register">📄</span> Register
-          </Link>
+          
+          {isAuthenticated ? (
+            <>
+              <Link to="/documents">
+                <span role="img" aria-label="documents">📁</span> Documents
+              </Link>
+              <Link to="/add">
+                <span role="img" aria-label="add">➕</span> Add Document
+              </Link>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <span>👤 {user?.name}</span>
+                <button 
+                  onClick={logout}
+                  className="btn" 
+                  style={{padding:'8px 12px', background:'#ff4757', color:'white'}}
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <Link to="/login">
+                <span role="img" aria-label="login">🔐</span> Login
+              </Link>
+              <Link to="/register" className="btn" style={{padding:'8px 12px'}}>
+                <span role="img" aria-label="register">📄</span> Register
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>

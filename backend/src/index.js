@@ -13,14 +13,39 @@ const documentRoutes = require('./routes/documents');
 
 const app = express();
 app.use(helmet());
-app.use(cors({ 
-  origin: ['http://localhost:5173', 'http://localhost:5174','http://192.168.20.100:5173', 'https://doc-vault-1.vercel.app', 'https://4b0488a7c4af.ngrok-free.app'], 
+// CORS configuration for production and development
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://192.168.20.100:5173',
+      'https://doc-vault-1.vercel.app'
+    ];
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow localhost with any port for development
+    if (origin.match(/^https?:\/\/localhost:\d+$/)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   preflightContinue: false,
   optionsSuccessStatus: 200
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,13 +53,38 @@ app.use(express.urlencoded({ extended: true }));
 const uploadsDir = path.join(process.cwd(), 'uploads');
 app.use('/uploads', express.static(uploadsDir));
 
-// Handle preflight requests
+// Handle preflight requests for CORS support
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
+  const origin = req.headers.origin;
+  
+  // Check if origin is allowed (same logic as CORS config)
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://192.168.20.100:5173',
+    'https://doc-vault-1.vercel.app'
+  ];
+  
+  let isAllowed = false;
+  
+  if (!origin) {
+    isAllowed = true; // Allow requests with no origin
+  } else if (allowedOrigins.includes(origin)) {
+    isAllowed = true;
+  } else if (origin.match(/^https?:\/\/localhost:\d+$/)) {
+    isAllowed = true;
+  }
+  
+  if (isAllowed) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', '86400'); // Cache preflight for 24 hours
+    res.sendStatus(200);
+  } else {
+    res.status(403).json({ error: 'CORS policy violation' });
+  }
 });
 
 app.get('/', (req, res) => res.json({ message: 'DocVault API Server is running' }));

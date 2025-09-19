@@ -1,25 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
-
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5051'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Login(){
   const nav = useNavigate()
+  const { login, isAuthenticated } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [msg, setMsg] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      nav('/documents')
+    }
+  }, [isAuthenticated, nav])
+
   async function onSubmit(e){
     e.preventDefault()
     setLoading(true); setMsg('Signing in...')
-    try{
-      const { data } = await axios.post(`${API_BASE}/api/auth/login`, { email, password })
-      localStorage.setItem('dv_token', data.token)
+    
+    const result = await login(email, password)
+    
+    if (result.success) {
       nav('/documents')
-    }catch(err){ setMsg(err.response?.data?.message || 'Login failed') }
-    finally{ setLoading(false) }
+    } else {
+      setMsg(result.message)
+    }
+    
+    setLoading(false)
   }
 
   return (
