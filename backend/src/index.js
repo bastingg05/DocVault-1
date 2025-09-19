@@ -110,6 +110,14 @@ app.use('/api/documents', documentRoutes);
 const PORT = process.env.PORT || 5051;
 const HOST = process.env.HOST || '0.0.0.0';
 
+// Log environment variables for debugging
+console.log('Environment variables:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
+console.log('PORT:', PORT);
+console.log('HOST:', HOST);
+
 connectToDatabase().then(() => {
   app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);
