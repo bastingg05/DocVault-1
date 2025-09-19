@@ -87,13 +87,34 @@ app.options('*', (req, res) => {
   }
 });
 
-app.get('/', (req, res) => res.json({ message: 'DocVault API Server is running' }));
+// Health check endpoint for Railway
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    message: 'DocVault API Server is running',
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Additional health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 
 const PORT = process.env.PORT || 5051;
+const HOST = process.env.HOST || '0.0.0.0';
+
 connectToDatabase().then(() => {
-  app.listen(PORT, () => console.log(`Server http://localhost:${PORT}`));
+  app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`);
+    console.log(`Health check available at http://${HOST}:${PORT}/`);
+  });
 }).catch((err) => {
   console.error('Startup failed:', err);
   process.exit(1);
