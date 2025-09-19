@@ -28,18 +28,30 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
+    
     if (!email || !password) return res.status(400).json({ message: 'Missing credentials' });
+    
     const user = await User.findOne({ email });
+    console.log('User found:', user ? 'Yes' : 'No');
+    
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });
+    
     const ok = await user.comparePassword(password);
+    console.log('Password match:', ok);
+    
     if (!ok) return res.status(401).json({ message: 'Invalid email or password' });
+    
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'dev_secret', { expiresIn: '7d' });
+    console.log('Token generated successfully');
+    
     if ((req.headers['content-type'] || '').includes('application/x-www-form-urlencoded')) {
       issueTokenCookie(res, token);
       return res.redirect('/documents.html');
     }
     res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ message: 'Login failed' });
   }
 });
@@ -66,6 +78,18 @@ router.get('/me', requireAuth, async (req, res) => {
     res.json({ id: user._id, name: user.name, email: user.email });
   } catch (err) {
     res.status(500).json({ message: 'Failed to load profile' });
+  }
+});
+
+// Debug endpoint to check users in database
+router.get('/debug/users', async (req, res) => {
+  try {
+    const users = await User.find({}).select('name email').lean();
+    console.log('Total users in database:', users.length);
+    res.json({ count: users.length, users });
+  } catch (err) {
+    console.error('Debug users error:', err);
+    res.status(500).json({ message: 'Failed to get users', error: err.message });
   }
 });
 
