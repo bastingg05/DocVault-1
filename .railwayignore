@@ -1,0 +1,5 @@
+frontend/
+frontend_react/
+.gitignore
+et --hard HEAD~1
+DEPLOYMENT_GUIDE.md
