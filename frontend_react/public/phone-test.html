@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phone Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>📱 Phone Connection Test</h1>
+    
+    <div id="tests">
+        <div class="test">Testing Railway backend connection...</div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://docvault-1-production.up.railway.app';
+        
+        async function testConnection() {
+            const testsDiv = document.getElementById('tests');
+            
+            // Test 1: Health endpoint
+            try {
+                const healthResponse = await fetch(`${API_BASE}/health`);
+                const healthData = await healthResponse.json();
+                
+                testsDiv.innerHTML += `
+                    <div class="test success">
+                        ✅ Railway Backend: Connected<br>
+                        Status: ${healthData.status}<br>
+                        Uptime: ${Math.round(healthData.uptime)}s
+                    </div>
+                `;
+            } catch (error) {
+                testsDiv.innerHTML += `
+                    <div class="test error">
+                        ❌ Railway Backend: Failed<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+            
+            // Test 2: Auth endpoint
+            try {
+                const authResponse = await fetch(`${API_BASE}/api/auth/debug/users`);
+                const authData = await authResponse.json();
+                
+                testsDiv.innerHTML += `
+                    <div class="test success">
+                        ✅ Auth API: Connected<br>
+                        Users in database: ${authData.count}
+                    </div>
+                `;
+            } catch (error) {
+                testsDiv.innerHTML += `
+                    <div class="test error">
+                        ❌ Auth API: Failed<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+            
+            // Test 3: CORS
+            try {
+                const corsResponse = await fetch(`${API_BASE}/api/auth/debug/users`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET'
+                    }
+                });
+                
+                testsDiv.innerHTML += `
+                    <div class="test success">
+                        ✅ CORS: Working<br>
+                        Status: ${corsResponse.status}
+                    </div>
+                `;
+            } catch (error) {
+                testsDiv.innerHTML += `
+                    <div class="test error">
+                        ❌ CORS: Failed<br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Run tests when page loads
+        testConnection();
+    </script>
+</body>
+</html>
