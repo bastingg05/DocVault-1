@@ -127,10 +127,16 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
 console.log('PORT:', PORT);
 console.log('HOST:', HOST);
 
+// Railway URL configuration
+const RAILWAY_URL = process.env.RAILWAY_PUBLIC_DOMAIN || process.env.RAILWAY_STATIC_URL || 'https://docvault-1-production.up.railway.app';
+console.log('Railway URL:', RAILWAY_URL);
+
 connectToDatabase().then(() => {
   app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);
     console.log(`Health check available at http://${HOST}:${PORT}/`);
+    console.log(`Railway URL: ${RAILWAY_URL}`);
+    console.log(`API endpoints available at ${RAILWAY_URL}/api/`);
   });
 }).catch((err) => {
   console.error('Startup failed:', err);
