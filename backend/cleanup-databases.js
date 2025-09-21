@@ -1,68 +1,74 @@
 const mongoose = require('mongoose');
 
-async function cleanupDatabases() {
+async function analyzeDatabases() {
   try {
-    console.log('🧹 Cleaning up databases - keeping only one...\n');
+    console.log('🔍 Analyzing MongoDB databases...\n');
     
-    // First, let's check what's in each database
-    console.log('1. Checking docvault database...');
-    const docvaultURI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
-    await mongoose.connect(docvaultURI);
-    const docvaultDb = mongoose.connection.db;
+    // Check main docvault database
+    console.log('📊 Checking main docvault database...');
+    const mainUri = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
     
-    const docvaultUsers = await docvaultDb.collection('users').find({}).toArray();
-    const docvaultDocs = await docvaultDb.collection('documents').find({}).toArray();
+    await mongoose.connect(mainUri);
+    const mainDb = mongoose.connection.db;
+    const mainCollections = await mainDb.listCollections().toArray();
     
-    console.log(`   Users: ${docvaultUsers.length}`);
-    console.log(`   Documents: ${docvaultDocs.length}`);
-    
-    await mongoose.connection.close();
-    
-    console.log('\n2. Checking docuvault-v2 database...');
-    const docuvaultV2URI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docuvault-v2?retryWrites=true&w=majority';
-    await mongoose.connect(docuvaultV2URI);
-    const docuvaultV2Db = mongoose.connection.db;
-    
-    const docuvaultV2Users = await docuvaultV2Db.collection('users').find({}).toArray();
-    const docuvaultV2Docs = await docuvaultV2Db.collection('documents').find({}).toArray();
-    
-    console.log(`   Users: ${docuvaultV2Users.length}`);
-    console.log(`   Documents: ${docuvaultV2Docs.length}`);
-    
-    await mongoose.connection.close();
-    
-    console.log('\n3. Database Analysis:');
-    console.log(`   docvault: ${docvaultUsers.length} users, ${docvaultDocs.length} documents`);
-    console.log(`   docuvault-v2: ${docuvaultV2Users.length} users, ${docuvaultV2Docs.length} documents`);
-    
-    if (docuvaultV2Users.length === 0 && docuvaultV2Docs.length === 0) {
-      console.log('\n✅ docuvault-v2 is empty - safe to delete');
-      console.log('🎯 RECOMMENDATION: Delete docuvault-v2 database in MongoDB Atlas');
-      console.log('\n📋 Steps to delete docuvault-v2:');
-      console.log('1. Go to MongoDB Atlas dashboard');
-      console.log('2. Find the docuvault-v2 database');
-      console.log('3. Click the trash/delete icon');
-      console.log('4. Confirm deletion');
-      console.log('\n✅ Your app will continue using docvault database');
-    } else {
-      console.log('\n⚠️  docuvault-v2 has data - manual review needed');
-      console.log('Check if you need to migrate any data from docuvault-v2 to docvault');
+    let mainTotalDocs = 0;
+    for (const collection of mainCollections) {
+      const count = await mainDb.collection(collection.name).countDocuments();
+      mainTotalDocs += count;
+      console.log(`  📄 ${collection.name}: ${count} documents`);
     }
     
-    console.log('\n🎯 FINAL RESULT:');
-    console.log('✅ Keep: docvault (your active database)');
-    console.log('❌ Delete: docuvault-v2 (empty database)');
-    console.log('🔧 Your app will continue working with docvault only');
+    console.log(`  📊 Total documents in docvault: ${mainTotalDocs}\n`);
+    await mongoose.disconnect();
+    
+    // Check docuvault-v2 database
+    console.log('📊 Checking docuvault-v2 database...');
+    const v2Uri = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docuvault-v2?retryWrites=true&w=majority';
+    
+    await mongoose.connect(v2Uri);
+    const v2Db = mongoose.connection.db;
+    const v2Collections = await v2Db.listCollections().toArray();
+    
+    let v2TotalDocs = 0;
+    for (const collection of v2Collections) {
+      const count = await v2Db.collection(collection.name).countDocuments();
+      v2TotalDocs += count;
+      console.log(`  📄 ${collection.name}: ${count} documents`);
+    }
+    
+    console.log(`  📊 Total documents in docuvault-v2: ${v2TotalDocs}\n`);
+    await mongoose.disconnect();
+    
+    // Analysis and recommendations
+    console.log('🎯 Analysis and Recommendations:');
+    console.log('================================');
+    
+    if (v2TotalDocs === 0) {
+      console.log('✅ docuvault-v2 is empty - SAFE TO DELETE');
+      console.log('   This database contains no data and can be safely removed.');
+    } else {
+      console.log('⚠️  docuvault-v2 contains data - REVIEW BEFORE DELETION');
+      console.log('   Consider backing up data before deletion.');
+    }
+    
+    if (mainTotalDocs > 0) {
+      console.log('✅ docvault (main) contains data - KEEP THIS DATABASE');
+      console.log('   This is your active database with user data.');
+    } else {
+      console.log('⚠️  docvault (main) is empty - CHECK YOUR APPLICATION');
+      console.log('   Make sure your app is connecting to the right database.');
+    }
+    
+    console.log('\n📋 Next Steps:');
+    console.log('1. Delete docuvault-v2 database in MongoDB Atlas dashboard');
+    console.log('2. Verify your app uses the docvault database');
+    console.log('3. Test your application to ensure everything works');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
-  } finally {
-    if (mongoose.connection.readyState === 1) {
-      await mongoose.connection.close();
-    }
-    console.log('\n📡 Database connection closed');
-    process.exit(0);
+    process.exit(1);
   }
 }
 
-cleanupDatabases();
+analyzeDatabases();

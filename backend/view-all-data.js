@@ -1,79 +1,66 @@
 const mongoose = require('mongoose');
 
-// Direct connection to Railway MongoDB
-const MONGODB_URI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
-
 async function viewAllData() {
   try {
-    console.log('🗄️  Viewing All MongoDB Data...\n');
+    console.log('📊 Viewing all data in MongoDB Atlas...\n');
     
-    console.log('1. Connecting to MongoDB Atlas...');
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ Connected to MongoDB Atlas');
+    const uri = process.env.MONGODB_URI || 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
+    
+    console.log('Connecting to MongoDB...');
+    console.log('URI:', uri.replace(/\/\/.*@/, '//***:***@')); // Hide credentials
+    
+    await mongoose.connect(uri);
+    console.log('✅ Connected to MongoDB');
     
     const db = mongoose.connection.db;
+    const dbName = db.databaseName;
+    console.log('📊 Database:', dbName);
     
     // List all collections
-    console.log('\n2. Available Collections:');
     const collections = await db.listCollections().toArray();
-    collections.forEach((collection, i) => {
-      console.log(`   ${i+1}. ${collection.name}`);
-    });
+    console.log('\n📁 Collections:');
+    for (const collection of collections) {
+      const count = await db.collection(collection.name).countDocuments();
+      console.log(`  📄 ${collection.name}: ${count} documents`);
+    }
     
-    // View users collection
-    console.log('\n3. 👥 USERS Collection:');
+    // Show users
     const users = await db.collection('users').find({}).toArray();
-    console.log(`   Total users: ${users.length}`);
-    
-    if (users.length > 0) {
-      users.forEach((user, i) => {
-        console.log(`   ${i+1}. Name: ${user.name}`);
-        console.log(`      Email: ${user.email}`);
-        console.log(`      ID: ${user._id}`);
-        console.log(`      Created: ${user.createdAt || 'Unknown'}`);
-        console.log('');
-      });
+    console.log('\n👥 Users:');
+    if (users.length === 0) {
+      console.log('  No users found');
     } else {
-      console.log('   No users found');
+      users.forEach((user, index) => {
+        console.log(`  ${index + 1}. ${user.name} (${user.email})`);
+        console.log(`     Created: ${user.createdAt || 'Unknown'}`);
+      });
     }
     
-    // View documents collection
-    console.log('4. 📄 DOCUMENTS Collection:');
+    // Show documents
     const documents = await db.collection('documents').find({}).toArray();
-    console.log(`   Total documents: ${documents.length}`);
-    
-    if (documents.length > 0) {
-      documents.forEach((doc, i) => {
-        console.log(`   ${i+1}. Title: ${doc.title || 'Untitled'}`);
-        console.log(`      Filename: ${doc.filename || 'Unknown'}`);
-        console.log(`      User: ${doc.userId || 'Unknown'}`);
-        console.log(`      Size: ${doc.size || 'Unknown'} bytes`);
-        console.log(`      Created: ${doc.createdAt || 'Unknown'}`);
-        console.log('');
-      });
+    console.log('\n📄 Documents:');
+    if (documents.length === 0) {
+      console.log('  No documents found');
     } else {
-      console.log('   No documents found');
+      documents.forEach((doc, index) => {
+        console.log(`  ${index + 1}. ${doc.name} (${doc.category})`);
+        console.log(`     Owner: ${doc.userId || 'Unknown'}`);
+        console.log(`     Created: ${doc.createdAt || 'Unknown'}`);
+      });
     }
     
-    // Database stats
-    console.log('5. 📊 Database Statistics:');
-    const stats = await db.stats();
-    console.log(`   Database name: ${stats.db}`);
-    console.log(`   Collections: ${stats.collections}`);
-    console.log(`   Data size: ${(stats.dataSize / 1024).toFixed(2)} KB`);
-    console.log(`   Storage size: ${(stats.storageSize / 1024).toFixed(2)} KB`);
+    // Database statistics
+    console.log('\n📊 Database Statistics:');
+    console.log(`  👥 Total users: ${users.length}`);
+    console.log(`  📄 Total documents: ${documents.length}`);
+    console.log(`  📁 Total collections: ${collections.length}`);
     
-    console.log('\n🌐 MongoDB Atlas Dashboard:');
-    console.log('   URL: https://cloud.mongodb.com/');
-    console.log('   Cluster: bastin0');
-    console.log('   Database: docvault');
+    await mongoose.disconnect();
+    console.log('\n✅ Disconnected from MongoDB');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
-  } finally {
-    await mongoose.connection.close();
-    console.log('\n📡 Database connection closed');
-    process.exit(0);
+    process.exit(1);
   }
 }
 

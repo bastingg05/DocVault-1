@@ -2,48 +2,52 @@ const mongoose = require('mongoose');
 
 async function checkDocuvaultV2() {
   try {
-    console.log('🔍 Checking docuvault-v2 database...\n');
+    // Connect to the docuvault-v2 database specifically
+    const uri = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docuvault-v2?retryWrites=true&w=majority';
     
-    // Connect to docuvault-v2 database
-    const MONGODB_URI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docuvault-v2?retryWrites=true&w=majority';
+    console.log('Connecting to docuvault-v2 database...');
+    console.log('URI:', uri.replace(/\/\/.*@/, '//***:***@')); // Hide credentials
     
-    console.log('1. Connecting to docuvault-v2...');
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ Connected to docuvault-v2');
+    await mongoose.connect(uri);
+    console.log('✅ Connected to docuvault-v2 database');
     
     const db = mongoose.connection.db;
-    console.log(`📊 Connected to database: ${db.databaseName}`);
+    const dbName = db.databaseName;
+    console.log('📊 Database name:', dbName);
     
-    // Check users in docuvault-v2
-    console.log('\n2. Checking users in docuvault-v2...');
-    const users = await db.collection('users').find({}).toArray();
-    console.log(`   Users found: ${users.length}`);
+    // List all collections
+    const collections = await db.listCollections().toArray();
+    console.log('📁 Collections in docuvault-v2:', collections.map(c => c.name));
     
-    users.forEach((user, i) => {
-      console.log(`   ${i+1}. ${user.email} (${user.name})`);
-    });
-    
-    // Check documents in docuvault-v2
-    console.log('\n3. Checking documents in docuvault-v2...');
-    const documents = await db.collection('documents').find({}).toArray();
-    console.log(`   Documents found: ${documents.length}`);
-    
-    console.log('\n🎯 COMPARISON:');
-    console.log('docvault database: 1 user (bastin2005@gmail.com)');
-    console.log(`docuvault-v2 database: ${users.length} users`);
-    
-    if (users.length > 0) {
-      console.log('\n🚨 FOUND THE ISSUE!');
-      console.log('Your app is using "docvault" but some data is in "docuvault-v2"');
-      console.log('This explains why users created on one device don\'t appear on the other!');
+    // Check each collection for documents
+    for (const collection of collections) {
+      const count = await db.collection(collection.name).countDocuments();
+      console.log(`📄 ${collection.name}: ${count} documents`);
     }
+    
+    // Check if database is empty
+    const totalCollections = collections.length;
+    const totalDocuments = await Promise.all(
+      collections.map(c => db.collection(c.name).countDocuments())
+    );
+    const totalDocs = totalDocuments.reduce((sum, count) => sum + count, 0);
+    
+    console.log('\n📊 Summary:');
+    console.log(`  - Collections: ${totalCollections}`);
+    console.log(`  - Total documents: ${totalDocs}`);
+    
+    if (totalDocs === 0) {
+      console.log('✅ Database is empty - safe to delete');
+    } else {
+      console.log('⚠️  Database contains data - review before deletion');
+    }
+    
+    await mongoose.disconnect();
+    console.log('✅ Disconnected from docuvault-v2');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
-  } finally {
-    await mongoose.connection.close();
-    console.log('\n📡 Database connection closed');
-    process.exit(0);
+    process.exit(1);
   }
 }
 

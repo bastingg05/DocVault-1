@@ -1,48 +1,60 @@
 const mongoose = require('mongoose');
 
-// Direct connection to Railway MongoDB
-const MONGODB_URI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
-
 async function clearRailwayUsers() {
   try {
-    console.log('🗑️  Clearing all users from Railway database...\n');
+    console.log('🗑️  Clearing all users from Railway database...');
     
-    console.log('1. Connecting to Railway MongoDB...');
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ Connected to Railway database');
+    const uri = process.env.MONGODB_URI || 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
     
-    // Get the database
+    console.log('Connecting to MongoDB...');
+    console.log('URI:', uri.replace(/\/\/.*@/, '//***:***@')); // Hide credentials
+    
+    await mongoose.connect(uri);
+    console.log('✅ Connected to MongoDB');
+    
     const db = mongoose.connection.db;
+    const dbName = db.databaseName;
+    console.log('📊 Database:', dbName);
     
-    // Check current users
-    console.log('\n2. Checking current users...');
-    const users = await db.collection('users').find({}).toArray();
-    console.log(`Found ${users.length} users:`);
-    users.forEach((user, i) => {
-      console.log(`   ${i+1}. ${user.email} (${user.name})`);
-    });
+    // Clear users collection
+    const usersResult = await db.collection('users').deleteMany({});
+    console.log(`👥 Deleted ${usersResult.deletedCount} users`);
     
-    if (users.length > 0) {
-      console.log('\n3. Clearing all users...');
-      const deleteResult = await db.collection('users').deleteMany({});
-      console.log(`✅ Deleted ${deleteResult.deletedCount} users`);
-      
-      // Clear documents too
-      console.log('\n4. Clearing all documents...');
-      const docResult = await db.collection('documents').deleteMany({});
-      console.log(`✅ Deleted ${docResult.deletedCount} documents`);
-      
-      console.log('\n🎉 Railway database is now completely clean!');
-    } else {
-      console.log('✅ Database is already clean!');
+    // Clear documents collection
+    const documentsResult = await db.collection('documents').deleteMany({});
+    console.log(`📄 Deleted ${documentsResult.deletedCount} documents`);
+    
+    // Clear any other collections that might exist
+    const collections = await db.listCollections().toArray();
+    for (const collection of collections) {
+      if (collection.name !== 'users' && collection.name !== 'documents') {
+        const result = await db.collection(collection.name).deleteMany({});
+        if (result.deletedCount > 0) {
+          console.log(`🗑️  Deleted ${result.deletedCount} documents from ${collection.name}`);
+        }
+      }
     }
     
+    // Verify cleanup
+    const remainingUsers = await db.collection('users').countDocuments();
+    const remainingDocs = await db.collection('documents').countDocuments();
+    
+    console.log('\n📊 Cleanup Summary:');
+    console.log(`  👥 Remaining users: ${remainingUsers}`);
+    console.log(`  📄 Remaining documents: ${remainingDocs}`);
+    
+    if (remainingUsers === 0 && remainingDocs === 0) {
+      console.log('✅ Database successfully cleared!');
+    } else {
+      console.log('⚠️  Some data may still remain');
+    }
+    
+    await mongoose.disconnect();
+    console.log('✅ Disconnected from MongoDB');
+    
   } catch (error) {
-    console.error('❌ Error clearing users:', error.message);
-  } finally {
-    await mongoose.connection.close();
-    console.log('\n📡 Database connection closed');
-    process.exit(0);
+    console.error('❌ Error:', error.message);
+    process.exit(1);
   }
 }
 

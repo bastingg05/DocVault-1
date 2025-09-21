@@ -2,43 +2,45 @@ const mongoose = require('mongoose');
 
 async function checkDatabaseConnection() {
   try {
-    console.log('🔍 Checking which database your app is connected to...\n');
+    const uri = process.env.MONGODB_URI || 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
     
-    // Your current connection string
-    const MONGODB_URI = 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
+    console.log('Connecting to MongoDB...');
+    console.log('URI:', uri.replace(/\/\/.*@/, '//***:***@')); // Hide credentials
     
-    console.log('1. Connecting to:', MONGODB_URI);
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ Connected successfully');
+    await mongoose.connect(uri);
+    console.log('✅ Connected to MongoDB successfully');
     
+    // Check which database we're connected to
     const db = mongoose.connection.db;
-    console.log(`📊 Connected to database: ${db.databaseName}`);
+    const dbName = db.databaseName;
+    console.log('📊 Database name:', dbName);
     
-    // Check users in this database
-    console.log('\n2. Checking users in this database...');
+    // List all collections
+    const collections = await db.listCollections().toArray();
+    console.log('📁 Collections:', collections.map(c => c.name));
+    
+    // Check users collection
     const users = await db.collection('users').find({}).toArray();
-    console.log(`   Users found: ${users.length}`);
+    console.log('👥 Users count:', users.length);
     
-    users.forEach((user, i) => {
-      console.log(`   ${i+1}. ${user.email} (${user.name})`);
-    });
-    
-    // Check documents in this database
-    console.log('\n3. Checking documents in this database...');
+    // Check documents collection
     const documents = await db.collection('documents').find({}).toArray();
-    console.log(`   Documents found: ${documents.length}`);
+    console.log('📄 Documents count:', documents.length);
     
-    console.log('\n🎯 ANALYSIS:');
-    console.log(`Your app is connected to: ${db.databaseName}`);
-    console.log('If you see different users in MongoDB Atlas,');
-    console.log('your app might be using a different database than expected.');
+    // Show sample users
+    if (users.length > 0) {
+      console.log('👤 Sample users:');
+      users.slice(0, 3).forEach(user => {
+        console.log(`  - ${user.name} (${user.email})`);
+      });
+    }
+    
+    await mongoose.disconnect();
+    console.log('✅ Disconnected from MongoDB');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
-  } finally {
-    await mongoose.connection.close();
-    console.log('\n📡 Database connection closed');
-    process.exit(0);
+    process.exit(1);
   }
 }
 

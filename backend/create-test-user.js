@@ -1,53 +1,67 @@
-const axios = require('axios');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+// User schema (simplified version)
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+});
+
+userSchema.methods.comparePassword = async function(password) {
+  return bcrypt.compare(password, this.password);
+};
+
+const User = mongoose.model('User', userSchema);
 
 async function createTestUser() {
   try {
-    const API_BASE = 'https://docvault-1-production.up.railway.app';
+    console.log('👤 Creating test user...');
     
-    console.log('👤 Creating test user with password "1234"...\n');
+    const uri = process.env.MONGODB_URI || 'mongodb+srv://bastingg05:gladwin2@bastin0.zvpymix.mongodb.net/docvault?retryWrites=true&w=majority';
     
-    // Create a test user
-    const testUser = {
+    console.log('Connecting to MongoDB...');
+    await mongoose.connect(uri);
+    console.log('✅ Connected to MongoDB');
+    
+    // Check if test user already exists
+    const existingUser = await User.findOne({ email: 'test@example.com' });
+    if (existingUser) {
+      console.log('⚠️  Test user already exists, deleting...');
+      await User.deleteOne({ email: 'test@example.com' });
+    }
+    
+    // Create new test user
+    const hashedPassword = await bcrypt.hash('1234', 10);
+    const testUser = new User({
       name: 'Test User',
       email: 'test@example.com',
-      password: '1234'
-    };
+      password: hashedPassword
+    });
     
-    console.log('Creating user:', testUser.email);
+    await testUser.save();
+    console.log('✅ Test user created successfully');
+    console.log('📧 Email: test@example.com');
+    console.log('🔑 Password: 1234');
     
-    try {
-      const response = await axios.post(`${API_BASE}/api/auth/register`, testUser);
+    // Verify the user was created
+    const savedUser = await User.findOne({ email: 'test@example.com' });
+    if (savedUser) {
+      console.log('✅ User verification successful');
+      console.log(`👤 Name: ${savedUser.name}`);
+      console.log(`📧 Email: ${savedUser.email}`);
       
-      console.log('✅ User created successfully!');
-      console.log('Token:', response.data.token ? 'Present' : 'Missing');
-      console.log('User:', response.data.user);
-      
-      // Now test login with the same credentials
-      console.log('\n🔍 Testing login with created user...');
-      const loginResponse = await axios.post(`${API_BASE}/api/auth/login`, {
-        email: testUser.email,
-        password: testUser.password
-      });
-      
-      console.log('✅ Login test successful!');
-      console.log('Login token:', loginResponse.data.token ? 'Present' : 'Missing');
-      
-      console.log('\n🎯 TEST CREDENTIALS:');
-      console.log('Email:', testUser.email);
-      console.log('Password:', testUser.password);
-      console.log('\n📱 Now try logging in on both laptop and phone with these credentials!');
-      
-    } catch (error) {
-      if (error.response && error.response.status === 409) {
-        console.log('❌ User already exists');
-        console.log('🔧 Try with a different email');
-      } else {
-        console.log('❌ Registration failed:', error.response?.data?.message || error.message);
-      }
+      // Test password comparison
+      const passwordMatch = await savedUser.comparePassword('1234');
+      console.log(`🔑 Password test: ${passwordMatch ? 'PASS' : 'FAIL'}`);
     }
+    
+    await mongoose.disconnect();
+    console.log('✅ Disconnected from MongoDB');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
+    process.exit(1);
   }
 }
 
