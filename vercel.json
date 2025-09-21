@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend_react && rm -rf node_modules package-lock.json && npm install && npm run build",
+  "buildCommand": "cd frontend_react && npm install && npm run build",
   "outputDirectory": "frontend_react/dist",
-  "installCommand": "cd frontend_react && rm -rf node_modules package-lock.json && npm install",
+  "installCommand": "cd frontend_react && npm install",
   "framework": "vite",
   "functions": {},
   "rewrites": [
