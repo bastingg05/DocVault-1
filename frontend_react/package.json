@@ -28,5 +28,11 @@
   },
   "engines": {
     "node": "18.x"
+  },
+  "overrides": {
+    "rollup": "^4.0.0"
+  },
+  "resolutions": {
+    "rollup": "^4.0.0"
   }
 }
