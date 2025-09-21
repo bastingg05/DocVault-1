@@ -8,7 +8,6 @@
     "frontend_react"
   ],
   "scripts": {
-    "build": "cd backend && npm install",
     "start": "cd backend && npm start",
     "dev": "cd backend && npm run dev"
   },
