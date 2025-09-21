@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -12,7 +12,7 @@ export default function Documents(){
   const [msg, setMsg] = useState('')
   const [deletingId, setDeletingId] = useState('')
 
-  async function load(){
+  const load = useCallback(async function(){
     try{
       const token = localStorage.getItem('dv_token')
       if(!token){ nav('/login'); return }
@@ -22,9 +22,12 @@ export default function Documents(){
       const { data } = await axios.get(`${API_BASE}/api/documents?${params.toString()}`, { headers: { Authorization: `Bearer ${token}` }})
       setItems(data.items || [])
       setMsg(`${(data.items||[]).length} documents`)
-    }catch(err){ setMsg('Failed to load') }
-  }
-  useEffect(()=>{ load() }, [])
+    }catch(err){ 
+      console.log('Load failed:', err.message)
+      setMsg('Failed to load') 
+    }
+  }, [q, category, nav])
+  useEffect(()=>{ load() }, [load])
 
   async function deleteDoc(id){
     try{
@@ -32,7 +35,10 @@ export default function Documents(){
       setDeletingId(id)
       await axios.delete(`${API_BASE}/api/documents/${id}`, { headers: { Authorization: `Bearer ${token}` }})
       await load()
-    }catch(err){ setMsg('Delete failed') }
+    }catch(err){ 
+      console.log('Delete failed:', err.message)
+      setMsg('Delete failed') 
+    }
     finally{ setDeletingId('') }
   }
 

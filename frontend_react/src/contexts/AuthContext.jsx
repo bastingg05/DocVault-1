@@ -1,13 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://docvault-1-production.up.railway.app'
 
-const AuthContext = createContext()
-
-export function useAuth() {
-  return useContext(AuthContext)
-}
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -32,8 +29,9 @@ export function AuthProvider({ children }) {
       })
       setUser(response.data.user)
       setIsAuthenticated(true)
-    } catch (error) {
+    } catch (err) {
       // Token is invalid, remove it
+      console.log('Token verification failed:', err.message)
       localStorage.removeItem('dv_token')
       setUser(null)
       setIsAuthenticated(false)
