@@ -37,7 +37,7 @@ export default function Header(){
               <Link to="/documents">
                 <span role="img" aria-label="documents">📁</span> Documents
               </Link>
-              <Link to="/add">
+              <Link to="/add-document">
                 <span role="img" aria-label="add">➕</span> Add Document
               </Link>
               <div style={{display:'flex',alignItems:'center',gap:8}}>

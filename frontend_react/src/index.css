@@ -26,11 +26,11 @@ a:hover { opacity: 1; }
 
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 h1 { font-size: 2rem; color: var(--heading); }
-.app-header { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(9,9,15,.9), rgba(9,9,15,.6)); border-bottom: 1px solid var(--border); }
-.nav { max-width: 1120px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+.app-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(9,9,15,.9), rgba(9,9,15,.6)); border-bottom: 1px solid var(--border); }
+.nav { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .logo { font-weight: 800; letter-spacing: .4px; font-size: 20px; background: linear-gradient(90deg, var(--accent), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 h1 { font-size: 2rem; }
-.container { max-width: 960px; margin: 0 auto; padding: 24px; }
+.container { max-width: 1040px; margin: 0 auto; padding: 24px; }
 .panel { max-width: 720px; margin: 24px auto; padding: 24px; border-radius: 16px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(16,16,27,.95), rgba(16,16,27,.88)); box-shadow: 0 14px 50px rgba(0,0,0,.5), 0 0 0 1px rgba(124,92,255,.06) inset, 0 0 60px rgba(139,92,255,.08); }
 .row { display: grid; align-items: start; row-gap: 6px; margin-bottom: 10px; }
 .row.inline { grid-template-columns: 1fr 1fr; column-gap: 28px; }
@@ -142,8 +142,8 @@ button:focus-visible {
   .auth-card { max-width: 95vw; padding: 24px; }
   .panel { margin: 16px auto; padding: 18px; }
   .grid-3 { grid-template-columns: 1fr; gap: 12px; }
-  .nav { flex-direction: column; gap: 12px; }
-  .nav > div { flex-wrap: wrap; justify-content: center; }
+  .nav { flex-direction: column; gap: 10px; align-items: stretch; }
+  .nav > div { flex-wrap: wrap; justify-content: center; gap: 10px; }
 }
 
 @media (max-width: 700px) {
@@ -155,7 +155,7 @@ button:focus-visible {
   .btn.btn-block { width: 100%; }
   .container { padding: 12px; }
   .nav { padding: 8px 12px; }
-  .nav > div { gap: 8px; font-size: 14px; }
+  .nav > div { gap: 8px; font-size: 14px; align-items: center; }
   .auth-card { padding: 20px; }
   .panel { padding: 16px; }
   h1.gradient { font-size: 2.5rem; }
