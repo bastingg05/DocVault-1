@@ -27,10 +27,10 @@ a:hover { opacity: 1; }
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 h1 { font-size: 2rem; color: var(--heading); }
 .app-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(9,9,15,.92), rgba(9,9,15,.7)); border-bottom: 1px solid var(--border); }
-.nav { max-width: 1120px; margin: 0 auto; padding: 6px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; }
-.nav a { display:inline-flex; align-items:center; gap:8px; font-size: 15px; }
-.nav .nav-actions a { padding: 6px 8px; border-radius: 10px; line-height: 1; }
-.nav .nav-actions .btn { padding: 7px 11px; font-size: 14px; line-height: 1; border-radius: 12px; box-shadow: 0 6px 16px rgba(139,92,255,.20), 0 0 0 1px rgba(53,195,255,.14) inset; }
+.nav { max-width: 1120px; margin: 0 auto; padding: 4px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; }
+.nav a { display:inline-flex; align-items:center; gap:6px; font-size: 13px; }
+.nav .nav-actions a { padding: 4px 6px; border-radius: 10px; line-height: 1; }
+.nav .nav-actions .btn { padding: 6px 10px; font-size: 13px; line-height: 1; border-radius: 10px; box-shadow: 0 4px 12px rgba(139,92,255,.18), 0 0 0 1px rgba(53,195,255,.12) inset; }
 .logo { font-weight: 800; letter-spacing: .4px; font-size: 20px; background: linear-gradient(90deg, var(--accent), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 h1 { font-size: 2rem; }
 .container { max-width: 1040px; margin: 0 auto; padding: 24px; }
@@ -159,10 +159,10 @@ button:focus-visible {
   .table td::before { content: attr(data-label); color: var(--muted); font-size: 12px; display: block; margin-bottom: 4px; }
   .btn.btn-block { width: 100%; }
   .container { padding: 12px; }
-  .nav { padding: 6px 12px; min-height: 56px; }
-  .nav .nav-actions { gap: 6px; }
-  .nav a { font-size: 13px; }
-  .nav .nav-actions .btn { padding: 8px 10px; font-size: 13px; }
+  .nav { padding: 4px 10px; min-height: 48px; }
+  .nav .nav-actions { gap: 4px; }
+  .nav a { font-size: 12.5px; }
+  .nav .nav-actions .btn { padding: 6px 8px; font-size: 12.5px; }
   .auth-card { padding: 20px; }
   .panel { padding: 16px; }
   h1.gradient { font-size: 2.5rem; }
