@@ -1,10 +1,14 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://docvault-1-production.up.railway.app'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext()
+
+export function useAuth() {
+  return useContext(AuthContext)
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
