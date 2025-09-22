@@ -10,7 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Header from './components/Header'
 import './App.css'
 
-// Force new deployment with routing
+// Force new deployment with routing - TESTING ROUTING
 function App() {
   return (
     <AuthProvider>
