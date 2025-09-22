@@ -27,7 +27,7 @@ export default function Header(){
     <header className="app-header">
       <nav className="nav">
         <Link to="/" style={{textDecoration:'none'}}><Logo /></Link>
-        <div style={{display:'flex',gap:16,alignItems:'center'}}>
+        <div className="nav-actions" style={{display:'flex',gap:16,alignItems:'center'}}>
           <Link to="/">
             <span role="img" aria-label="home">🏠</span> Home
           </Link>
