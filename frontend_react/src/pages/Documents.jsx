@@ -47,7 +47,7 @@ export default function Documents(){
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <h2 className="title-underline">Your documents</h2>
         <div style={{display:'flex',gap:8}}>
-          <Link className="btn" to="/add">Add document</Link>
+          <Link className="btn" to="/add-document">Add document</Link>
           <button className="btn" onClick={()=>{ localStorage.removeItem('dv_token'); nav('/login') }}>Logout</button>
         </div>
       </div>
