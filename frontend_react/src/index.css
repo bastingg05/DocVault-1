@@ -160,10 +160,10 @@ button:focus-visible {
   .table td::before { content: attr(data-label); color: var(--muted); font-size: 12px; display: block; margin-bottom: 4px; }
   .btn.btn-block { width: 100%; }
   .container { padding: 12px; }
-  .nav { padding: 2px 8px; min-height: 44px; }
+  .nav { padding: 2px 8px; min-height: 40px; }
   .nav .nav-actions { gap: 4px; }
   .nav a { font-size: 12px; }
-  .nav .nav-actions .btn { padding: 5px 8px; font-size: 12px; }
+  .nav .nav-actions .btn { padding: 5px 8px; font-size: 14px; }
   .auth-card { padding: 20px; }
   .panel { padding: 16px; }
   h1.gradient { font-size: 2.5rem; }
