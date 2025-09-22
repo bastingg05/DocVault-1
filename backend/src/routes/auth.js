@@ -9,11 +9,17 @@ const router = Router();
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = String(email || '').trim().toLowerCase();
     if (!name || !email || !password) return res.status(400).json({ message: 'Missing fields' });
-    const existing = await User.findOne({ email });
+    // Basic typo guard for common email domains
+    if (/@gamil\.com$/i.test(normalizedEmail)) {
+      return res.status(400).json({ message: 'Did you mean gmail.com? Please correct your email.' });
+    }
+
+    const existing = await User.findOne({ email: normalizedEmail }).collation({ locale: 'en', strength: 2 });
     if (existing) return res.status(409).json({ message: 'Email already registered' });
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, passwordHash });
+    const user = await User.create({ name, email: normalizedEmail, passwordHash });
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'dev_secret', { expiresIn: '7d' });
     if ((req.headers['content-type'] || '').includes('application/x-www-form-urlencoded')) {
       issueTokenCookie(res, token);
@@ -28,11 +34,12 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = String(email || '').trim().toLowerCase();
     console.log('Login attempt for email:', email);
     
     if (!email || !password) return res.status(400).json({ message: 'Missing credentials' });
     
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail }).collation({ locale: 'en', strength: 2 });
     console.log('User found:', user ? 'Yes' : 'No');
     
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });

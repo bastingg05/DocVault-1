@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
 }, { timestamps: true });
 
+// Ensure case-insensitive unique index on email
+userSchema.index({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } });
+
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.passwordHash);
 };
