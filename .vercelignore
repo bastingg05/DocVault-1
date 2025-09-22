@@ -1,7 +1,8 @@
-backend/
-node_modules/
+node_modules
+.git
+.gitignore
+README.md
+backend
+frontend
 *.log
-.env
-.env.local
-.env.production.local
-.env.development.local
+.DS_Store

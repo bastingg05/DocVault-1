@@ -6,6 +6,8 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   build: {
+    outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
       external: [],
       output: {
@@ -13,9 +15,13 @@ export default defineConfig({
       }
     },
     target: 'esnext',
-    minify: 'esbuild'
+    minify: 'esbuild',
+    sourcemap: false
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'axios']
+  },
+  server: {
+    port: 3000
   }
 })

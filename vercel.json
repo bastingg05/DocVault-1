@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend_react && npm install && npm run build",
+  "buildCommand": "cd frontend_react && npm ci && npm run build",
   "outputDirectory": "frontend_react/dist",
-  "installCommand": "cd frontend_react && npm install",
+  "installCommand": "cd frontend_react && npm ci",
   "framework": "vite",
   "functions": {},
   "rewrites": [
@@ -10,5 +10,9 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "NPM_CONFIG_IGNORE_OPTIONAL": "false"
+  }
 }
