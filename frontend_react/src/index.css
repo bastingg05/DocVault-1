@@ -26,11 +26,11 @@ a:hover { opacity: 1; }
 
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 h1 { font-size: 2rem; color: var(--heading); }
-.app-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(9,9,15,.9), rgba(9,9,15,.6)); border-bottom: 1px solid var(--border); }
-.nav { max-width: 1200px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 56px; }
+.app-header { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(9,9,15,.92), rgba(9,9,15,.7)); border-bottom: 1px solid var(--border); }
+.nav { max-width: 1120px; margin: 0 auto; padding: 6px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; }
 .nav a { display:inline-flex; align-items:center; gap:8px; font-size: 15px; }
-.nav .nav-actions a { padding: 6px 8px; border-radius: 10px; }
-.nav .nav-actions .btn { padding: 8px 12px; font-size: 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(139,92,255,.24), 0 0 0 1px rgba(53,195,255,.16) inset; }
+.nav .nav-actions a { padding: 6px 8px; border-radius: 10px; line-height: 1; }
+.nav .nav-actions .btn { padding: 7px 11px; font-size: 14px; line-height: 1; border-radius: 12px; box-shadow: 0 6px 16px rgba(139,92,255,.20), 0 0 0 1px rgba(53,195,255,.14) inset; }
 .logo { font-weight: 800; letter-spacing: .4px; font-size: 20px; background: linear-gradient(90deg, var(--accent), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 h1 { font-size: 2rem; }
 .container { max-width: 1040px; margin: 0 auto; padding: 24px; }
@@ -147,8 +147,8 @@ button:focus-visible {
   .grid-3 { grid-template-columns: 1fr; gap: 12px; }
   .nav { flex-direction: column; gap: 6px; align-items: center; }
   .nav .nav-actions { flex-wrap: wrap; justify-content: center; gap: 6px; }
-  .nav a { font-size: 14px; }
-  .nav .nav-actions .btn { padding: 8px 12px; font-size: 14px; }
+  .nav a { font-size: 13.5px; }
+  .nav .nav-actions .btn { padding: 7px 10px; font-size: 13.5px; }
 }
 
 @media (max-width: 700px) {
