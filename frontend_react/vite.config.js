@@ -1,10 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import legacy from '@vitejs/plugin-legacy'
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [
+    react(),
+    legacy({
+      targets: ['defaults', 'not IE 11', 'Android >= 6', 'iOS >= 11'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+    })
+  ],
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -14,7 +21,8 @@ export default defineConfig({
         manualChunks: undefined
       }
     },
-    target: 'esnext',
+    // Lower target to support older mobile WebViews
+    target: 'es2018',
     minify: 'esbuild',
     sourcemap: false
   },
