@@ -63,6 +63,48 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Update a document (metadata and optional file replacement)
+router.put('/:id', upload.single('file'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existing = await Document.findOne({ _id: id, userId: req.user.id });
+    if (!existing) return res.status(404).json({ message: 'Not found' });
+
+    const { name, category, notes, expiryDate } = req.body;
+
+    // Prepare updates only for provided fields
+    const updates = {};
+    if (typeof name === 'string' && name.trim()) updates.name = name.trim();
+    if (typeof category === 'string' && category.trim()) updates.category = category.trim();
+    if (typeof notes === 'string') updates.notes = notes;
+    if (typeof expiryDate === 'string' && expiryDate) {
+      const d = new Date(expiryDate);
+      if (!isNaN(d.getTime())) updates.expiryDate = d; else updates.expiryDate = undefined;
+    }
+
+    // If file uploaded, replace on disk and update metadata
+    if (req.file) {
+      // remove old file if any
+      if (existing.storagePath) {
+        const prev = path.join(process.cwd(), existing.storagePath);
+        try { if (fs.existsSync(prev)) fs.unlinkSync(prev); } catch {}
+      }
+      updates.storagePath = path.join('uploads', req.file.filename);
+      updates.originalName = req.file.originalname;
+      updates.mimeType = req.file.mimetype;
+      updates.size = req.file.size;
+    }
+
+    await Document.updateOne({ _id: id, userId: req.user.id }, { $set: updates });
+
+    const updated = await Document.findById(id).lean();
+    const withLink = { ...updated, downloadUrl: `/${updated.storagePath.replace(/\\/g, '/')}` };
+    res.json({ ok: true, item: withLink });
+  } catch (err) {
+    res.status(500).json({ message: 'Update failed' });
+  }
+});
+
 // Delete a document and its file
 router.delete('/:id', async (req, res) => {
   try {

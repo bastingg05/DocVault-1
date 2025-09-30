@@ -11,6 +11,8 @@ export default function Documents(){
   const [category, setCategory] = useState('')
   const [msg, setMsg] = useState('')
   const [deletingId, setDeletingId] = useState('')
+  const [editing, setEditing] = useState(null)
+  const [editValues, setEditValues] = useState({ name:'', category:'Academic', expiryDate:'', notes:'', file:null })
 
   const load = useCallback(async function(){
     try{
@@ -40,6 +42,37 @@ export default function Documents(){
       setMsg('Delete failed') 
     }
     finally{ setDeletingId('') }
+  }
+
+  function openEdit(d){
+    setEditing(d)
+    setEditValues({
+      name: d.name || '',
+      category: d.category || 'Academic',
+      expiryDate: d.expiryDate ? new Date(d.expiryDate).toISOString().slice(0,10) : '',
+      notes: d.notes || '',
+      file: null
+    })
+  }
+
+  async function saveEdit(e){
+    e?.preventDefault?.()
+    if(!editing) return
+    try{
+      const token = localStorage.getItem('dv_token')
+      const fd = new FormData()
+      if(editValues.name) fd.append('name', editValues.name)
+      if(editValues.category) fd.append('category', editValues.category)
+      if(editValues.expiryDate) fd.append('expiryDate', editValues.expiryDate)
+      if(typeof editValues.notes === 'string') fd.append('notes', editValues.notes)
+      if(editValues.file) fd.append('file', editValues.file)
+      await axios.put(`${API_BASE}/api/documents/${editing._id}`, fd, { headers: { Authorization: `Bearer ${token}` }})
+      setEditing(null)
+      await load()
+    }catch(err){
+      console.log('Update failed:', err.message)
+      setMsg('Update failed')
+    }
   }
 
   return (
@@ -86,6 +119,7 @@ export default function Documents(){
                   <td data-label="Actions" style={{display:'flex',gap:8, flexWrap:'wrap'}}>
                     {href && <a className="btn" href={href} target="_blank" rel="noopener">View</a>}
                     {href && <a className="btn" href={href} download>Download</a>}
+                    <button className="btn" onClick={()=>openEdit(d)}>Edit</button>
                     <button className="btn" onClick={()=>deleteDoc(d._id)} disabled={deletingId===d._id}>{deletingId===d._id ? 'Deleting…' : 'Delete'}</button>
                   </td>
                 </tr>
@@ -95,6 +129,50 @@ export default function Documents(){
         </table>
         <div className="help">{msg}</div>
       </div>
+
+      {editing && (
+        <div className="modal-backdrop" style={{position:'fixed', inset:0, background:'rgba(0,0,0,.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}} onClick={()=>setEditing(null)}>
+          <form onClick={e=>e.stopPropagation()} onSubmit={saveEdit} className="panel auth-card" style={{maxWidth:820, width:'90%', background:'linear-gradient(180deg, rgba(16,16,27,.96), rgba(16,16,27,.9))'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <h3>Edit document</h3>
+              <button type="button" className="btn" onClick={()=>setEditing(null)}>Close</button>
+            </div>
+            <div className="row inline">
+              <div>
+                <label>Name</label>
+                <input value={editValues.name} onChange={e=>setEditValues(v=>({...v, name:e.target.value}))} required />
+              </div>
+              <div>
+                <label>Category</label>
+                <select value={editValues.category} onChange={e=>setEditValues(v=>({...v, category:e.target.value}))}>
+                  <option>Academic</option>
+                  <option>ID Proof</option>
+                  <option>Certificates</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div className="row inline">
+              <div>
+                <label>Expiry date</label>
+                <input type="date" value={editValues.expiryDate} onChange={e=>setEditValues(v=>({...v, expiryDate:e.target.value}))} />
+              </div>
+              <div>
+                <label>Replace file (optional)</label>
+                <input type="file" onChange={e=>setEditValues(v=>({...v, file: e.target.files?.[0] || null}))} />
+              </div>
+            </div>
+            <div className="row">
+              <label>Notes</label>
+              <textarea rows={3} value={editValues.notes} onChange={e=>setEditValues(v=>({...v, notes:e.target.value}))} />
+            </div>
+            <div className="row" style={{display:'flex', gap:8}}>
+              <button className="btn" type="submit" style={{height:48, fontWeight:800}}>Save changes</button>
+              <button className="btn" type="button" onClick={()=>setEditing(null)} style={{height:48}}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   )
 }
