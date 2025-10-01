@@ -14,6 +14,19 @@ const documentRoutes = require('./routes/documents');
 const app = express();
 app.use(helmet());
 // CORS configuration for production and development
+const allowedOriginPatterns = [
+  /^https?:\/\/localhost:\d+$/,
+  /^http:\/\/192\.168\.[0-9.]+:\d+$/,
+  /^https?:\/\/.*\.vercel\.app$/,
+  /^https?:\/\/.*\.netlify\.app$/,
+  /^https?:\/\/.*\.onrender\.com$/
+];
+
+const envAllowed = (process.env.ALLOW_ORIGINS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -25,7 +38,7 @@ const corsOptions = {
       'http://192.168.20.100:5173',
       'https://doc-vault-1.vercel.app',
       'https://doc-vault-1-p5hnoiw1n-bastin-georges-projects.vercel.app',
-      // Render (add your custom domain or onrender.com app URL if needed)
+      ...envAllowed
     ];
     
     // Check if origin is in allowed list
@@ -33,15 +46,8 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // Allow localhost with any port for development
-    if (origin.match(/^https?:\/\/localhost:\d+$/)) {
-      return callback(null, true);
-    }
-    
-    // Allow Vercel and Render subdomains for production
-    if (origin.match(/^https:\/\/.*\.vercel\.app$/) || origin.match(/^https:\/\/.*\.onrender\.com$/)) {
-      return callback(null, true);
-    }
+    // Allow by pattern (localhost, Vercel, Netlify, Render)
+    if (allowedOriginPatterns.some((rx) => rx.test(origin))) return callback(null, true);
     
     callback(new Error('Not allowed by CORS'));
   },
