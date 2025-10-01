@@ -12,6 +12,9 @@ export default defineConfig({
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     })
   ],
+  define: {
+    __API_BASE__: JSON.stringify(process.env.VITE_API_BASE || 'https://docvault-1.onrender.com')
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

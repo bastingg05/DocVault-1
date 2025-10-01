@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5051'
+const API_BASE = import.meta.env.VITE_API_BASE || (typeof __API_BASE__ !== 'undefined' ? __API_BASE__ : 'https://docvault-1.onrender.com')
 
 export default function AddDocument(){
   const nav = useNavigate()
