@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: docvault-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    rootDir: backend
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: HOST
+        value: 0.0.0.0
+      # Set these in Render dashboard (leave empty here or override via dashboard)
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+

@@ -24,7 +24,8 @@ const corsOptions = {
       'http://localhost:5174',
       'http://192.168.20.100:5173',
       'https://doc-vault-1.vercel.app',
-      'https://doc-vault-1-p5hnoiw1n-bastin-georges-projects.vercel.app'
+      'https://doc-vault-1-p5hnoiw1n-bastin-georges-projects.vercel.app',
+      // Render (add your custom domain or onrender.com app URL if needed)
     ];
     
     // Check if origin is in allowed list
@@ -37,8 +38,8 @@ const corsOptions = {
       return callback(null, true);
     }
     
-    // Allow any Vercel subdomain for production
-    if (origin.match(/^https:\/\/.*\.vercel\.app$/)) {
+    // Allow Vercel and Render subdomains for production
+    if (origin.match(/^https:\/\/.*\.vercel\.app$/) || origin.match(/^https:\/\/.*\.onrender\.com$/)) {
       return callback(null, true);
     }
     
@@ -96,7 +97,7 @@ app.options('*', (req, res) => {
   }
 });
 
-// Health check endpoint for Railway
+// Health check endpoint
 app.get('/', (req, res) => {
   res.status(200).json({ 
     message: 'DocVault API Server is running',
@@ -127,16 +128,18 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
 console.log('PORT:', PORT);
 console.log('HOST:', HOST);
 
-// Railway URL configuration
-const RAILWAY_URL = process.env.RAILWAY_PUBLIC_DOMAIN || process.env.RAILWAY_STATIC_URL || 'https://docvault-1-production.up.railway.app';
-console.log('Railway URL:', RAILWAY_URL);
+// Public URL for logs (Render sets RENDER_EXTERNAL_URL)
+const PUBLIC_URL = process.env.RENDER_EXTERNAL_URL || process.env.PUBLIC_URL || '';
+if (PUBLIC_URL) console.log('Public URL:', PUBLIC_URL);
 
 connectToDatabase().then(() => {
   app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);
     console.log(`Health check available at http://${HOST}:${PORT}/`);
-    console.log(`Railway URL: ${RAILWAY_URL}`);
-    console.log(`API endpoints available at ${RAILWAY_URL}/api/`);
+    if (PUBLIC_URL) {
+      console.log(`Public URL: ${PUBLIC_URL}`);
+      console.log(`API endpoints available at ${PUBLIC_URL.replace(/\/$/, '')}/api/`);
+    }
   });
 }).catch((err) => {
   console.error('Startup failed:', err);
