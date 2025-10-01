@@ -1,7 +1,10 @@
 import { createContext, useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://docvault-1-production.up.railway.app'
+// Prefer env; fall back to build-time define (__API_BASE__) then Render URL
+// This avoids accidentally calling the old Railway API
+// eslint-disable-next-line no-undef
+const API_BASE = import.meta.env.VITE_API_BASE || (typeof __API_BASE__ !== 'undefined' ? __API_BASE__ : 'https://docvault-1.onrender.com')
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext()
